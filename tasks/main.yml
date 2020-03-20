@@ -1,2 +1,28 @@
 ---
-# tasks file for ansible_role_nginx
+
+- block:
+    - include: context.yml
+
+    - include: accounts.yml
+      vars: {
+        accounts_groups: "{{ nginx_groups }}",
+        accounts_users: "{{ nginx_users }}"
+      }
+
+    - include: workspace.yml
+
+    - include: install_packages.yml
+      vars: {
+        packages: "{{ nginx_packages }}",
+        services: "{{ nginx_services }}"
+      }
+
+    - include: setup_nginx.yml
+
+    - include: service.yml
+
+  when: want_nginx
+
+- name: "set has_nginx to {{ want_nginx }}"
+  set_fact:
+    has_nginx: "{{ want_nginx }}"

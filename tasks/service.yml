@@ -1,0 +1,37 @@
+---
+
+- name: setup daemontools services
+  block:
+    - name: create daemontools workspaces
+      file:
+        path: "{{ nginx_daemontools_dir }}/{{ item.path }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+        state: directory
+      loop: "{{ nginx_daemontools_directories_template }}"
+
+    - name: deploy daemontools run scripts
+      template:
+        src: "svscan/{{ item.path }}"
+        dest: "{{ nginx_daemontools_dir }}/{{ item.path }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ nginx_daemontools_scripts_template }}"
+
+    - name: supervise (link) daemontools service
+      file:
+        src: "{{ nginx_daemontools_dir }}"
+        dest: "{{ daemontools_svscan_dir }}/nginx"
+        state: link
+
+  when: has_daemontools|d(false)
+
+
+- name: start standard service
+  block:
+    - fail:
+        msg: "not implemented"
+
+  when: not has_daemontools|d(false)

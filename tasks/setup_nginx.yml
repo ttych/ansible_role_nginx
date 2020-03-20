@@ -1,0 +1,30 @@
+---
+
+- name: deploy nginx files
+  template:
+    src: "{{ item.template }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner|d(omit) }}"
+    group: "{{ item.group|d(omit) }}"
+  loop:
+    - { template: nginx/nginx.conf,
+        dest: "{{ nginx_conf }}",
+        mode: '0644',
+        owner: root,
+        group: 0 }
+    - { template: nginx/mime.types,
+        dest: "{{ nginx_etc_dir }}/mime.types",
+        mode: '0644',
+        owner: root,
+        group: 0 }
+    - { template: static/index.html,
+        dest: "{{ nginx_static_dir }}/index.html",
+        mode: '0644',
+        owner: root,
+        group: 0 }
+    - { template: static/50x.html,
+        dest: "{{ nginx_static_dir }}/50x.html",
+        mode: '0644',
+        owner: root,
+        group: 0 }

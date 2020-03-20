@@ -1,0 +1,30 @@
+---
+
+- name: install packages
+  package:
+    name: "{{ packages }}"
+    state: present
+  register: install
+
+- name: stop default service
+  service:
+    name: "{{ item }}"
+    state: stopped
+  loop: "{{ services }}"
+  when: install|d() and install.changed
+
+- name: disable default service on Linux
+  service:
+    name: "{{ item }}"
+    enabled: no
+  loop: "{{ services }}"
+  when:
+    - ansible_system == 'Linux'
+    - install|d() and install.changed
+
+- name: disable default service on FreeBSD
+  include: sysrc.yml key="{{ item }}_enable" value="NO"
+  loop: "{{ services }}"
+  when:
+    - ansible_system == 'FreeBSD'
+    - install|d() and install.changed

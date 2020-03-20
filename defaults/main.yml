@@ -1,2 +1,49 @@
 ---
-# defaults file for ansible_role_nginx
+
+want_nginx: true
+
+nginx_packages:
+  - nginx
+
+nginx_services:
+  - nginx
+
+
+nginx_user: nginx
+nginx_group: nginx
+
+nginx_groups:
+  - name: "{{ nginx_group }}"
+    gid: 3202
+
+nginx_users:
+  - name: "{{ nginx_user }}"
+    comment: "{{ nginx_user }}"
+    group: "{{ nginx_group }}"
+    groups:
+    home: "{{ nginx_dir }}"
+    create_home: no
+    shell: /usr/sbin/nologin
+    uid: 3202
+    password: '*'
+
+nginx_dir: /home/nginx
+nginx_etc_dir: "{{ nginx_dir }}/etc"
+nginx_log_dir: "{{ nginx_dir }}/log"
+nginx_work_dir: "{{ nginx_dir }}/work"
+nginx_static_dir: "{{ nginx_dir }}/static"
+nginx_conf: "{{ nginx_etc_dir }}/nginx.conf"
+
+
+nginx_directories:
+  - { path: "{{ nginx_dir }}", owner: root, group: 0, mode: "0755" }
+  - { path: "{{ nginx_etc_dir }}", owner: root, group: 0, mode: "0755" }
+  - { path: "{{ nginx_log_dir }}", owner: "{{ nginx_user }}", group: 0, mode: "0750" }
+  - { path: "{{ nginx_static_dir }}", owner: root, group: 0, mode: "0755" }
+  - { path: "{{ nginx_work_dir }}", owner: "{{ nginx_user }}", group: 0, mode: "0750" }
+  - { path: "{{ nginx_work_dir }}/logs", owner: "{{ nginx_user }}", group: 0, mode: "0750" }
+
+nginx_worker_processes: auto
+nginx_default_location: "{{ nginx_static_dir }}"
+nginx_default_listen: localhost
+nginx_default_port: 80

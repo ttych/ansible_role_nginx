@@ -1,0 +1,10 @@
+---
+- name: "get sysrc {{ key }} status"
+  shell: "sysrc -n {{ key }}"
+  changed_when: no
+  register: sysrc_key_status
+  ignore_errors: yes
+
+- name: "update sysrc {{ key }}"
+  shell: "sysrc {{ key }}=\"{{ value }}\""
+  when: sysrc_key_status.rc != 0 or sysrc_key_status.stdout != value

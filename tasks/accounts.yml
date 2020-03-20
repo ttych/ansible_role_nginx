@@ -1,0 +1,46 @@
+---
+
+- name: create groups
+  group:
+    name: "{{ item.name }}"
+    state: present
+    gid: "{{ item.gid | default(omit) }}"
+    system: "{{ item.system | default('no') }}"
+  loop: "{{ accounts_groups }}"
+
+- name: create users
+  user:
+    name: "{{ item.name }}"
+    uid: "{{ item.uid }}"
+    comment: "{{ item.comment }}"
+    create_home: "{{ item.create_home | default(omit) }}"
+    home: "{{ item.home | default(omit) }}"
+    force: yes
+    group: "{{ item.group }}"
+    groups: "{{ item.groups }}"
+    shell: "{{ item.shell | default('/usr/sbin/nologin') }}"
+    password: "{{ item.password|default(omit) }}"
+    state: present
+  loop: "{{ accounts_users }}"
+
+- name: define shell environment files
+  set_fact:
+    accounts_environments:
+      - .profile
+      - .bashrc
+      - .bash_profile
+      - .zprofile
+      - .zshrc
+
+- name: deploy shell environments
+  template:
+    src: "shell_env/{{ item[0].name }}/{{ item[1] }}"
+    dest: "{{ item[0].home }}/{{ item[1] }}"
+    owner: "{{ item[0].name }}"
+    group: "{{ item[0].group }}"
+    mode: "0600"
+  failed_when: no
+  when: item[0].home is defined
+  with_nested:
+    - "{{ accounts_users }}"
+    - "{{ accounts_environments }}"

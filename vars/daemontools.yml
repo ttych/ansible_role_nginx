@@ -1,0 +1,12 @@
+---
+
+nginx_daemontools_dir: "{{ nginx_dir }}/svscan"
+
+nginx_daemontools_directories_template:
+  - { path: "", owner: root, group: "{{ root_group }}", mode: "0755" }
+  - { path: "/log", owner: root, group: "{{ root_group }}", mode: "0755" }
+  - { path: "/log/main", owner: "{{ daemontools_logger_user }}", group: "{{ root_group }}", mode: "0755" }
+
+nginx_daemontools_scripts_template:
+  - { path: run, owner: root, group: "{{ root_group }}", mode: "0755" }
+  - { path: log/run, owner: root, group: "{{ root_group }}", mode: "0755" }
