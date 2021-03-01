@@ -21,13 +21,14 @@ nginx_users:
     comment: "{{ nginx_user }}"
     group: "{{ nginx_group }}"
     groups:
-    home: "{{ nginx_dir }}"
+    home: "{{ nginx_home }}"
     create_home: no
     shell: /usr/sbin/nologin
     uid: 3202
     password: '*'
 
-nginx_dir: /home/nginx
+nginx_home: /home/nginx
+nginx_dir: "{{ nginx_home }}"
 nginx_etc_dir: "{{ nginx_dir }}/etc"
 nginx_log_dir: "{{ nginx_dir }}/log"
 nginx_work_dir: "{{ nginx_dir }}/work"

@@ -17,7 +17,7 @@
     home: "{{ item.home | default(omit) }}"
     force: yes
     group: "{{ item.group }}"
-    groups: "{{ item.groups }}"
+    groups: "{{ item.groups | default(omit) }}"
     shell: "{{ item.shell | default('/usr/sbin/nologin') }}"
     password: "{{ item.password|default(omit) }}"
     state: present

@@ -5,6 +5,7 @@
     name: "{{ packages }}"
     state: present
   register: install
+  when: (packages | d([]) | length) > 0
 
 - name: stop default service
   service:
