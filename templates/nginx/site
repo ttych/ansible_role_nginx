@@ -1,0 +1,33 @@
+{% for upstream in nginx_site.upstream|d([]) %}
+upstream {{ upstream.name }} {{ upstream.args }} {
+  {% for server in upstream.servers %}
+  server {{ server.socket }} {{ server.options }};
+  {% endfor %}
+  {% for option in upstream.options %}
+  {{ option }};
+  {% endfor %}
+}
+{% endfor %}
+
+server {
+  {% for listen in nginx_site.listen|d([]) %}
+    listen {{ listen }};
+  {% endfor %}
+    server_name {{ nginx_site.server_name }};
+    root {{ nginx_site.root }};
+
+  {% for location in nginx_site.locations|d([]) %}
+    location {{ location.path }} {
+      {% for option in location.options | d([]) %}
+         {{ option }};
+      {% endfor %}
+    }
+  {% endfor %}
+
+    access_log {{ nginx_log_dir }}/site_{{ nginx_site.name }}.access.log;
+    error_log  {{ nginx_log_dir }}/site_{{ nginx_site.name }}.error.log info;
+
+    error_page 500 502 503 504 /500.html;
+    client_max_body_size {{ nginx_site.client_max_body_size | d("1G") }};
+    keepalive_timeout {{ nginx_site.keepalive_timeout | d(10) }};
+}

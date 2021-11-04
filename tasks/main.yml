@@ -19,6 +19,8 @@
 
     - include: setup_nginx.yml
 
+    - include: setup_nginx_sites.yml
+
     - include: service.yml
 
   when: want_nginx

@@ -1,0 +1,4 @@
+---
+
+- include: setup_nginx_site.yml nginx_site="{{ item }}"
+  with_items: "{{ nginx_sites }}"

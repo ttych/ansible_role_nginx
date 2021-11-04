@@ -1,0 +1,28 @@
+---
+
+- name: deploy available site
+  template:
+    src: nginx/site
+    dest: "{{ nginx_sites_available }}/{{ nginx_site.name }}"
+    owner: "{{ nginx_conf_user }}"
+    group: "{{ nginx_group }}"
+    mode: '0640'
+
+- name: ensure site root
+  file:
+    path: "{{ nginx_site.root }}"
+    state: directory
+
+- name: enable site
+  file:
+    src: "{{ nginx_sites_available }}/{{ nginx_site.name }}"
+    dest: "{{ nginx_sites_enabled }}/{{ nginx_site.name }}"
+    force: yes
+    state: link
+  when: nginx_site.enable | d(false)
+
+- name: disable site
+  file:
+    path: "{{ nginx_sites_enabled }}/{{ nginx_site.name }}"
+    state: absent
+  when: not (nginx_site.enable | d(false))

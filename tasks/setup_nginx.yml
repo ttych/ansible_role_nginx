@@ -11,20 +11,20 @@
     - { template: nginx/nginx.conf,
         dest: "{{ nginx_conf }}",
         mode: '0644',
-        owner: root,
-        group: 0 }
+        owner: "{{ nginx_conf_user }}",
+        group: "{{ nginx_group }}" }
     - { template: nginx/mime.types,
         dest: "{{ nginx_etc_dir }}/mime.types",
         mode: '0644',
-        owner: root,
-        group: 0 }
+        owner: "{{ nginx_conf_user }}",
+        group: "{{ nginx_group }}" }
     - { template: static/index.html,
         dest: "{{ nginx_static_dir }}/index.html",
         mode: '0644',
-        owner: root,
-        group: 0 }
+        owner: "{{ nginx_conf_user }}",
+        group: "{{ nginx_group }}" }
     - { template: static/50x.html,
         dest: "{{ nginx_static_dir }}/50x.html",
         mode: '0644',
-        owner: root,
-        group: 0 }
+        owner: "{{ nginx_conf_user }}",
+        group: "{{ nginx_group }}" }

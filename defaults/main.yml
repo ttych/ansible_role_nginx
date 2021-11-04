@@ -12,6 +12,8 @@ nginx_services:
 nginx_user: nginx
 nginx_group: nginx
 
+nginx_conf_user: root
+
 nginx_groups:
   - name: "{{ nginx_group }}"
     gid: 3202
@@ -51,3 +53,5 @@ nginx_worker_processes: auto
 nginx_default_location: "{{ nginx_static_dir }}"
 nginx_default_listen: localhost
 nginx_default_port: 80
+
+nginx_sites: []

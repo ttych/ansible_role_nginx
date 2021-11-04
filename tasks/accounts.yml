@@ -11,7 +11,7 @@
 - name: create users
   user:
     name: "{{ item.name }}"
-    uid: "{{ item.uid }}"
+    uid: "{{ item.uid | default(omit) }}"
     comment: "{{ item.comment }}"
     create_home: "{{ item.create_home | default(omit) }}"
     home: "{{ item.home | default(omit) }}"
@@ -22,6 +22,15 @@
     password: "{{ item.password|default(omit) }}"
     state: present
   loop: "{{ accounts_users }}"
+
+- name: add authorized_keys
+  authorized_key:
+    user: "{{ item.name }}"
+    state: present
+    key: "{{ item.ssh_auth_key }}"
+  when: item.ssh_auth_key is defined and item.ssh_auth_key
+  loop: "{{ accounts_users }}"
+
 
 - name: define shell environment files
   set_fact:
