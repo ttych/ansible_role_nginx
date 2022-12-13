@@ -1,6 +1,7 @@
 ---
 
 want_nginx: true
+want_nginx_service: true
 
 nginx_packages:
   - nginx

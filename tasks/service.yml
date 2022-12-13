@@ -25,6 +25,7 @@
         src: "{{ nginx_daemontools_dir }}"
         dest: "{{ daemontools_svscan_dir }}/nginx"
         state: link
+      when: want_nginx_service
 
   when: has_daemontools|d(false)
 
@@ -34,4 +35,6 @@
     - fail:
         msg: "not implemented"
 
-  when: not has_daemontools|d(false)
+  when:
+    - not has_daemontools|d(false)
+    - want_nginx_service
