@@ -1,25 +1,25 @@
 ---
 
 - block:
-    - include: context.yml
+    - include_tasks: context.yml
 
-    - include: accounts.yml
-      vars: {
-        accounts_groups: "{{ nginx_groups }}",
+    - include_tasks: context_service.yml
+
+    - include_tasks: accounts.yml
+      vars:
+        accounts_groups: "{{ nginx_groups }}"
         accounts_users: "{{ nginx_users }}"
-      }
 
-    - include: workspace.yml
+    - include_tasks: workspace.yml
 
-    - include: install_packages.yml
-      vars: {
-        packages: "{{ nginx_packages }}",
+    - include_tasks: install_packages.yml
+      vars:
+        packages: "{{ nginx_packages }}"
         services: "{{ nginx_services }}"
-      }
 
-    - include: setup_nginx.yml
+    - include_tasks: setup_nginx.yml
 
-    - include: setup_nginx_sites.yml
+    - include_tasks: setup_nginx_sites.yml
 
     - include: service.yml
 

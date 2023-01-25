@@ -1,4 +1,6 @@
 ---
 
-- include: setup_nginx_site.yml nginx_site="{{ item }}"
+- include_tasks: setup_nginx_site.yml
+  vars:
+    nginx_site: "{{ item }}"
   with_items: "{{ nginx_sites }}"

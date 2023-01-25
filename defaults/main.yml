@@ -9,11 +9,10 @@ nginx_packages:
 nginx_services:
   - nginx
 
-
 nginx_user: nginx
 nginx_group: nginx
-
 nginx_conf_user: root
+nginx_conf_group: 0
 
 nginx_groups:
   - name: "{{ nginx_group }}"
@@ -39,16 +38,31 @@ nginx_static_dir: "{{ nginx_dir }}/static"
 nginx_conf: "{{ nginx_etc_dir }}/nginx.conf"
 nginx_sites_available: "{{ nginx_etc_dir }}/sites-available"
 nginx_sites_enabled: "{{ nginx_etc_dir }}/sites-enabled"
+nginx_scripts_dir: "{{ nginx_dir }}/scripts"
+nginx_data_dir: "{{ nginx_dir }}/{{ nginx_data_dir_subpath }}"
+nginx_data_dir_subpath: data
 
 nginx_directories:
-  - { path: "{{ nginx_dir }}", owner: root, group: 0, mode: "0755" }
-  - { path: "{{ nginx_etc_dir }}", owner: root, group: 0, mode: "0755" }
-  - { path: "{{ nginx_log_dir }}", owner: "{{ nginx_user }}", group: 0, mode: "0750" }
-  - { path: "{{ nginx_static_dir }}", owner: root, group: 0, mode: "0755" }
-  - { path: "{{ nginx_work_dir }}", owner: "{{ nginx_user }}", group: 0, mode: "0750" }
-  - { path: "{{ nginx_work_dir }}/log", owner: "{{ nginx_user }}", group: 0, mode: "0750" }
-  - { path: "{{ nginx_sites_available }}", owner: root, group: 0, mode: "0755" }
-  - { path: "{{ nginx_sites_enabled }}", owner: root, group: 0, mode: "0755" }
+  - { path: "{{ nginx_dir }}", owner: "{{ nginx_conf_user }}", group: "{{ nginx_conf_group }}", mode: "0755" }
+  - { path: "{{ nginx_etc_dir }}", owner: "{{ nginx_conf_user }}", group: "{{ nginx_conf_group }}", mode: "0755" }
+  - { path: "{{ nginx_log_dir }}", owner: "{{ nginx_user }}", group: "{{ nginx_conf_group }}", mode: "0750" }
+  - { path: "{{ nginx_static_dir }}", owner: "{{ nginx_conf_user }}", group: "{{ nginx_conf_group }}", mode: "0755" }
+  - { path: "{{ nginx_work_dir }}", owner: "{{ nginx_user }}", group: "{{ nginx_conf_group }}", mode: "0750" }
+  - { path: "{{ nginx_work_dir }}/log", owner: "{{ nginx_user }}", group: "{{ nginx_conf_group }}", mode: "0750" }
+  - { path: "{{ nginx_sites_available }}", owner: "{{ nginx_conf_user }}", group: "{{ nginx_conf_group }}", mode: "0755" }
+  - { path: "{{ nginx_sites_enabled }}", owner: "{{ nginx_conf_user }}", group: "{{ nginx_conf_group }}", mode: "0755" }
+  - { path: "{{ nginx_scripts_dir }}", owner: "{{ nginx_conf_user }}", group: "{{ nginx_conf_group }}", mode: "0755" }
+  - { path: "{{ nginx_data_dir }}", owner: "{{ nginx_conf_user }}", group: "{{ nginx_conf_group }}", mode: "0755" }
+
+nginx_data_directories:
+  - { subpath: "{{ nginx_data_dir_subpath }}" }
+
+nginx_data_zfs_properties:
+  setuid: off
+  compression: "lz4"
+  sharenfs: off
+  sharesmb: off
+  atime: off
 
 nginx_worker_processes: auto
 nginx_default_location: "{{ nginx_static_dir }}"
@@ -57,4 +71,22 @@ nginx_default_port: 80
 
 nginx_limit_status: 429
 
-nginx_sites: []
+nginx_site_files:
+  name: "{{ nginx_site_files_name }}"
+  listen:
+    - 80
+  server_name: "{{ nginx_site_files_name }} {{ nginx_site_files_name }}.local"
+  root: "{{ nginx_site_files_root }}"
+  locations:
+    - path: /
+      options:
+        - autoindex on
+  enable: yes
+  root_settings:
+    isolated: yes
+    mode: 1777
+nginx_site_files_name: files
+nginx_site_files_root: "{{ nginx_data_dir }}/{{ nginx_site_files_name }}.local"
+
+nginx_sites:
+  - "{{ nginx_site_files }}"

@@ -8,10 +8,30 @@
     group: "{{ nginx_group }}"
     mode: '0640'
 
+- block:
+    - name: "get zfs associated dataset for {{ nginx_site.root | dirname }}"
+      shell: zfs list -H "{{ nginx_site.root | dirname }}" | awk '{print $1}'
+      register: nginx_site_parent_dataset
+      changed_when: no
+
+    - name: setup isolated nginx_site root with zfs
+      zfs:
+        name: "{{ nginx_site_parent_dataset.stdout }}/{{ nginx_site.root | basename }}"
+        state: present
+        extra_zfs_properties: "{{ nginx_site.root_settings.zfs_properties | d(nginx_data_zfs_properties) }}"
+      when:
+        - nginx_site_parent_dataset.rc == 0
+        - nginx_site_parent_dataset.stdout != ""
+
+  when: nginx_site.root_settings.isolated | d(false)
+
 - name: ensure site root
   file:
     path: "{{ nginx_site.root }}"
-    state: directory
+    mode: "{{ nginx_site.root_settings.mode | d(omit) }}"
+    owner: "{{ nginx_site.root_settings.owner | d(omit) }}"
+    group: "{{ nginx_site.root_settings.group | d(omit) }}"
+    state: "{{ nginx_site.root_settings.state | d('directory') }}"
 
 - name: enable site
   file:

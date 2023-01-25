@@ -1,0 +1,19 @@
+---
+
+- name: include service variables
+  include_vars:
+    dir: vars
+    files_matching: "service.yml"
+  when: has_service|d(false)
+
+- name: include daemontools variables
+  include_vars:
+    dir: vars
+    files_matching: "daemontools.yml"
+  when: has_daemontools|d(false)
+
+- name: include runit variables
+  include_vars:
+    dir: vars
+    files_matching: "runit.yml"
+  when: (has_runit|d(false)) and not (has_daemontools|d(false))

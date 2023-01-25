@@ -1,5 +1,20 @@
 ---
 
+- name: "get zfs associated dataset for {{ nginx_dir }}"
+  shell: zfs list -H "{{ nginx_dir }}" | awk '{print $1}'
+  register: app_nginx_dir_dataset
+  changed_when: no
+
+- name: setup zfs data datasets
+  zfs:
+    name: "{{ app_nginx_dir_dataset.stdout }}/{{ item.subpath }}"
+    state: present
+    extra_zfs_properties: "{{ item.zfs_properties | d(nginx_data_zfs_properties) }}"
+  loop: "{{ nginx_data_directories }}"
+  when:
+    - app_nginx_dir_dataset.rc == 0
+    - app_nginx_dir_dataset.stdout != ""
+
 - name: setup workspace directory tree
   file:
     path: "{{ item.path | d(omit) }}"
