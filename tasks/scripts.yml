@@ -1,0 +1,9 @@
+---
+
+- name: deploy nginx script
+  template:
+    src: "scripts/nginx.sh"
+    dest: "{{ nginx_scripts_nginx }}"
+    owner: "{{ nginx_conf_user }}"
+    group: "{{ nginx_conf_group }}"
+    mode: "0755"

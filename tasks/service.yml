@@ -38,3 +38,9 @@
   when:
     - not has_daemontools|d(false)
     - want_nginx_service
+
+
+- name: reload on conf changed
+  command:
+    cmd: "{{ nginx_scripts_nginx }} reload"
+  when: t_nginx_conf.changed

@@ -64,6 +64,10 @@ nginx_data_zfs_properties:
   sharesmb: off
   atime: off
 
+nginx_pidfile: "{{ nginx_work_dir }}/nginx.pid"
+
+nginx_scripts_nginx: "{{ nginx_scripts_dir }}/nginx.sh"
+
 nginx_worker_processes: auto
 nginx_default_location: "{{ nginx_static_dir }}"
 nginx_default_listen: localhost

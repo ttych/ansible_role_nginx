@@ -21,7 +21,9 @@
 
     - include_tasks: setup_nginx_sites.yml
 
-    - include: service.yml
+    - include_tasks: scripts.yml
+
+    - include_tasks: service.yml
 
   when: want_nginx
 

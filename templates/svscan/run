@@ -4,4 +4,7 @@ exec 2>&1
 
 # exec setuidgid "{{ nginx_user }}" \
 #      nginx -c "{{ nginx_conf }}" -p "{{ nginx_work_dir }}"
-exec nginx -c "{{ nginx_conf }}" -p "{{ nginx_work_dir }}"
+
+# exec nginx -c "{{ nginx_conf }}" -p "{{ nginx_work_dir }}"
+
+exec "{{ nginx_scripts_nginx }}" start_fg

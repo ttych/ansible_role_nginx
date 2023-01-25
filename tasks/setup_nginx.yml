@@ -28,3 +28,4 @@
         mode: '0644',
         owner: "{{ nginx_conf_user }}",
         group: "{{ nginx_group }}" }
+  register: t_nginx_conf
